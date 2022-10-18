@@ -1,6 +1,6 @@
 import { FC, ReactNode } from 'react'
 import Head from "next/head"
-import { Navbar } from '../ui';
+import { Navbar, SideMenu } from '../ui';
 
 interface Props {
   title: string;
@@ -21,17 +21,17 @@ export const ShopLayout: FC<Props> = ({ children, title, pageDescription, imageF
         <meta name="og;description" content={pageDescription} />
         {
           imageFullUrl && (
-            <meta name='og:image' content={ imageFullUrl } />
+            <meta name='og:image' content={imageFullUrl} />
           )
         }
 
       </Head>
       <nav>
 
-        <Navbar/>
+        <Navbar />
       </nav>
 
-      {/* sidebar */}
+      <SideMenu />
 
       <main style={{
         margin: '80px auto',
