@@ -3,11 +3,9 @@ import { Card, CardActionArea, CardMedia, Grid, Typography } from '@mui/material
 import { ShopLayout } from '../components/layouts/ShopLayout';
 import { initialData } from '../database/products';
 import { ProductList } from '../components/products';
-import { IProduct } from '../interfaces/products';
-
-
 
 const Home: NextPage = () => {
+
   return (
     <ShopLayout title={'Teslo-Shop'} pageDescription={'Encuentra los mejores productos de Teslo Shop aqui'}>
       <Typography variant='h1' component='h1'>Tienda</Typography>

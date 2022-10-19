@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Next.js Teslo Shop
+Para correr localmente, se necesita la base de datos
+```
 
-## Getting Started
+docker-compose up -d
+```
 
-First, run the development server:
+* El -d, significa __detached__
 
-```bash
-npm run dev
-# or
+* MongDB URL Local:
+```
+
+mongodb://localhost:27017/entriesdb
+```
+
+## Configurar las variables de entorno
+Renombrar el archivo __.env.template__ a __.env__
+
+
+* Recontruir los módulos de node y levantar Next
+```
+
+yarn install
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Llenar la base de datos con info de pruebas
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Llamar a:
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+http://localhost:3000/api/seeds
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+### __Anotaciones del curso__
 
-To learn more about Next.js, take a look at the following resources:
+- El pages/api trabaja en backend y obtiene la data desde la bd.   
+El /apis trabaja en front y manda requests al back para obtener esa misma data.   
+   
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- La Entry de models es el formato de la data en mongoose, lo uso en backend.   
+La Entry de interfaces es como se ve en el front.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-### esto es una prueba
+- /pages/entries/index.js fue creado con el snippet nextapi (API Routes). Esto recibe los requests rest al back. Al snippet le falta el nombre de la funcion, por eso da un error, lo agrego y ya.
