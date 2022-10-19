@@ -10,7 +10,7 @@ docker-compose up -d
 * MongDB URL Local:
 ```
 
-mongodb://localhost:27017/entriesdb
+mongodb://localhost:27017/teslodb
 ```
 
 ## Configurar las variables de entorno
@@ -29,7 +29,7 @@ yarn dev
 Llamar a:
 ```
 
-http://localhost:3000/api/seeds
+http://localhost:3000/api/seed
 ```
 
 
