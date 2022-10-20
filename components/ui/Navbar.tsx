@@ -1,14 +1,16 @@
+import { useState, useEffect, useContext } from 'react';
 import NextLink from 'next/link';
-import { AppBar, Toolbar, Link, Box, Button, IconButton, Badge } from "@mui/material"
-import Typography from '@mui/material/Typography';
+import { AppBar, Toolbar, Link, Box, Button, IconButton, Badge,Typography } from "@mui/material"
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 import { useRouter } from 'next/router';
-import { useState, useEffect } from 'react';
+import { UiContext } from '../../context';
 
 
 export const Navbar = () => {
 
-    const [activeGender, setActiveGender] = useState('')
+    const [activeGender, setActiveGender] = useState('');
+
+    const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
 
     const { asPath }= useRouter();
     
@@ -70,7 +72,7 @@ export const Navbar = () => {
                     </Link>
                 </NextLink>
 
-                <Button>
+                <Button onClick={ toggleSideMenu } >
                     Menu
                 </Button>
 

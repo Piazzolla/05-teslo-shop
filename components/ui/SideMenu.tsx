@@ -1,111 +1,134 @@
-import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
+import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemButton, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
-
+import { useRouter } from "next/router";
+import { UiContext } from "../../context";
+import { useContext } from "react";
 
 export const SideMenu = () => {
-  return (
-    <Drawer
-        open={ false }
-        anchor='right'
-        sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
-    >
-        <Box sx={{ width: 250, paddingTop: 5 }}>
-            
-            <List>
 
-                <ListItem>
-                    <Input
-                        type='text'
-                        placeholder="Buscar..."
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                aria-label="toggle password visibility"
-                                >
-                                 <SearchOutlined />
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                </ListItem>
+    const router = useRouter();
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <AccountCircleOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Perfil'} />
-                </ListItem>
+    const navigateTo = (url: string) => {
+        toggleSideMenu();
+        router.push(url);
+    }
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <ConfirmationNumberOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Mis Ordenes'} />
-                </ListItem>
+    const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
 
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
-                    <ListItemIcon>
-                        <MaleOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Hombres'} />
-                </ListItem>
+    return (
+        <Drawer
+            open={isMenuOpen}
+            anchor='right'
+            sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
+            onClose={ toggleSideMenu }
+        >
+            <Box sx={{ width: 250, paddingTop: 5 }}>
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
-                    <ListItemIcon>
-                        <FemaleOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Mujeres'} />
-                </ListItem>
+                <List>
 
-                <ListItem button sx={{ display: { xs: '', sm: 'none' } }}>
-                    <ListItemIcon>
-                        <EscalatorWarningOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Niños'} />
-                </ListItem>
+                    <ListItem>
+                        <Input
+                            type='text'
+                            placeholder="Buscar..."
+                            endAdornment={
+                                <InputAdornment position="end">
+                                    <IconButton
+                                        aria-label="toggle password visibility"
+                                    >
+                                        <SearchOutlined />
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                        />
+                    </ListItem>
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <AccountCircleOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Perfil'} />
+                    </ListItemButton>
+
+                    <ListItemButton >
+                        <ListItemIcon>
+                            <ConfirmationNumberOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Mis Ordenes'} />
+                    </ListItemButton>
 
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <VpnKeyOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Ingresar'} />
-                </ListItem>
+                    <ListItemButton
+                        sx={{ display: { xs: '', sm: 'none' } }}
+                        onClick={(event) => navigateTo('/category/men')}
+                    >
+                        <ListItemIcon>
+                            <MaleOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Hombres'} />
+                    </ListItemButton>
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <LoginOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Salir'} />
-                </ListItem>
+                    <ListItemButton
+                        sx={{ display: { xs: '', sm: 'none' } }}
+                        onClick={(event) => navigateTo('/category/women')}
+                    >
+                        <ListItemIcon>
+                            <FemaleOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Mujeres'} />
+                    </ListItemButton>
+
+                    <ListItemButton
+                        sx={{ display: { xs: '', sm: 'none' } }}
+                        onClick={(event) => navigateTo('/category/kid')}
+                    >
+                        <ListItemIcon>
+                            <EscalatorWarningOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Niños'} />
+                    </ListItemButton>
 
 
-                {/* Admin */}
-                <Divider />
-                <ListSubheader>Admin Panel</ListSubheader>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <VpnKeyOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Ingresar'} />
+                    </ListItemButton>
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <CategoryOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Productos'} />
-                </ListItem>
-                <ListItem button>
-                    <ListItemIcon>
-                        <ConfirmationNumberOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Ordenes'} />
-                </ListItem>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <LoginOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Salir'} />
+                    </ListItemButton>
 
-                <ListItem button>
-                    <ListItemIcon>
-                        <AdminPanelSettings/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Usuarios'} />
-                </ListItem>
-            </List>
-        </Box>
-    </Drawer>
-  )
+
+                    {/* Admin */}
+                    <Divider />
+                    <ListSubheader>Admin Panel</ListSubheader>
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <CategoryOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Productos'} />
+                    </ListItemButton>
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <ConfirmationNumberOutlined />
+                        </ListItemIcon>
+                        <ListItemText primary={'Ordenes'} />
+                    </ListItemButton>
+
+                    <ListItemButton>
+                        <ListItemIcon>
+                            <AdminPanelSettings />
+                        </ListItemIcon>
+                        <ListItemText primary={'Usuarios'} />
+                    </ListItemButton>
+                </List>
+            </Box>
+        </Drawer>
+    )
 }
