@@ -2,9 +2,27 @@ import NextLink from 'next/link';
 import { AppBar, Toolbar, Link, Box, Button, IconButton, Badge } from "@mui/material"
 import Typography from '@mui/material/Typography';
 import { SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
 
 
 export const Navbar = () => {
+
+    const [activeGender, setActiveGender] = useState('')
+
+    const { asPath }= useRouter();
+    
+    useEffect(() => {
+        
+        const splittedPath = asPath.split('/');
+        let gender = '';
+        if( splittedPath.includes('category') ){
+            gender = splittedPath[splittedPath.length - 1]
+        }
+        setActiveGender(gender);
+    
+    }, [ asPath ])
+    
     return (
         <AppBar>
             <Toolbar>
@@ -21,17 +39,17 @@ export const Navbar = () => {
                 <Box sx={{ display: { xs: 'none', sm: 'block'}}}>
                     <NextLink href='/category/men'>
                         <Link>
-                            <Button>Hombres</Button>
+                            <Button color={ activeGender === 'men'? 'primary' : 'info'}>Hombres</Button>
                         </Link>
                     </NextLink>
                     <NextLink href='/category/women'>
                         <Link>
-                            <Button>Mujeres</Button>
+                            <Button color={ activeGender === 'women'? 'primary' : 'info'}>Mujeres</Button>
                         </Link>
                     </NextLink>
-                    <NextLink href='/category/kids'>
+                    <NextLink href='/category/kid'>
                         <Link>
-                            <Button>Niños</Button>
+                            <Button color={ activeGender === 'kid'? 'primary' : 'info'}>Niños</Button>
                         </Link>
                     </NextLink>
                 </Box>

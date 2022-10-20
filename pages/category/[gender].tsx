@@ -13,8 +13,6 @@ const TRADUCCION_GENDER = {
     kids: 'Niños'
 }
 
-//TODO: MANDAR A 404 si no es de estas categorias
-const VALID_GENDER = [ 'men', 'women', 'kids', 'unisex']
 
 const MenPage: NextPage = () => {
 
