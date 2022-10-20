@@ -4,11 +4,12 @@ import { ShopLayout } from '../components/layouts/ShopLayout';
 import { ProductList } from '../components/products';
 import { useProducts } from '../hooks';
 import { FullScreenLoading } from '../components/ui/FullScreenLoading';
+import { IProduct } from '../interfaces/products';
 
 
 const HomePage: NextPage = () => {
 
-  const { products, isLoading } = useProducts('/products');
+  const { products, isLoading } = useProducts('/products') as { products: IProduct[], isLoading: boolean};
 
   return (
     <ShopLayout title={'Teslo-Shop'} pageDescription={'Encuentra los mejores productos de Teslo Shop aqui'}>
