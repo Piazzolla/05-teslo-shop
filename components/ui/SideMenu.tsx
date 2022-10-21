@@ -2,26 +2,36 @@ import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem
 import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined } from "@mui/icons-material"
 import { useRouter } from "next/router";
 import { UiContext } from "../../context";
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 export const SideMenu = () => {
 
     const router = useRouter();
 
     const [searchTerm, setSearchTerm] = useState('')
-    
+
     const { isMenuOpen, toggleSideMenu } = useContext(UiContext);
-    
+
     const navigateTo = (url: string) => {
         toggleSideMenu();
         router.push(url);
     }
 
     const onSearchTerm = () => {
-        if(searchTerm.trim().length === 0 )  return;
+        if (searchTerm.trim().length === 0) return;
         navigateTo(`/search/${searchTerm}`);
 
     }
+
+    const inputEl = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (inputEl.current != null) {
+            if(isMenuOpen) {
+                inputEl.current.focus();
+            }
+        }
+    }, [isMenuOpen])
 
 
     return (
@@ -29,7 +39,7 @@ export const SideMenu = () => {
             open={isMenuOpen}
             anchor='right'
             sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
-            onClose={ toggleSideMenu }
+            onClose={toggleSideMenu}
         >
             <Box sx={{ width: 250, paddingTop: 5 }}>
 
@@ -37,15 +47,16 @@ export const SideMenu = () => {
 
                     <ListItem>
                         <Input
-                            value={ searchTerm }
-                            onChange={ (e) => setSearchTerm( e.target.value )}
-                            onKeyPress={ (e) => e.key === 'Enter' ? onSearchTerm() : null}
+                            ref={inputEl}
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' ? onSearchTerm() : null}
                             type='text'
                             placeholder="Buscar..."
                             endAdornment={
                                 <InputAdornment position="end">
                                     <IconButton
-                                        onClick={ onSearchTerm }
+                                        onClick={onSearchTerm}
                                     >
                                         <SearchOutlined />
                                     </IconButton>
