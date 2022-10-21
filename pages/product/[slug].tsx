@@ -20,11 +20,11 @@ interface Props {
   product: IProduct
 }
 
-export const ProductPage:NextPage<Props> = ({ product }) => {
+export const ProductPage: NextPage<Props> = ({ product }) => {
 
 
- // const router = useRouter();
- //  const { products: product, isLoading } = useProducts(`/products/${ router.query.slug }`)
+  // const router = useRouter();
+  //  const { products: product, isLoading } = useProducts(`/products/${ router.query.slug }`)
 
 
   return (
@@ -51,9 +51,21 @@ export const ProductPage:NextPage<Props> = ({ product }) => {
             </Box>
 
             {/* Agregar al carrito */}
-            <Button color="secondary" className='circular-btn'>
-              Agregar al carrito
-            </Button>
+            {
+              (product.inStock > 0) ?
+                (
+                  <Button color="secondary" className='circular-btn'>
+                    Agregar al carrito
+                  </Button>
+                )
+                : (
+                  <Chip
+                    color="error"
+                    variant="outlined"
+                    label="No hay disponibles"
+                  />
+                )
+            }
 
             {/* <Chip label='No hay disponibles' color="error" variant="outlined"/> */}
             {/* Descripcion */}
@@ -101,10 +113,10 @@ export const ProductPage:NextPage<Props> = ({ product }) => {
 export const getStaticPaths: GetStaticPaths = async (ctx) => {
 
 
-  const productSlugs =  await dbProducts.getAllProductSlugs();
+  const productSlugs = await dbProducts.getAllProductSlugs();
 
   return {
-    paths: productSlugs.map( ({slug}) => ({
+    paths: productSlugs.map(({ slug }) => ({
       params: { slug }
     })),
     fallback: "blocking"
@@ -120,14 +132,14 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const { slug = '' } = params as { slug: string }
-  const product = await dbProducts.getProductBySlug( slug );
- 
+  const product = await dbProducts.getProductBySlug(slug);
 
-  if(!product) {
+
+  if (!product) {
     return {
       redirect: {
         destination: '/',
-        permanent: false 
+        permanent: false
       }
     }
   }
