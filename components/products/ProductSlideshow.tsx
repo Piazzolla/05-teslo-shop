@@ -8,7 +8,7 @@ interface ProductSlideshowProps {
     images: string[]
 }
 
-const ProductSlideshow: FC<ProductSlideshowProps> = ({ images }) => {
+export const ProductSlideshow: FC<ProductSlideshowProps> = ({ images }) => {
     return (
         <Slide
             easing="ease"
@@ -35,5 +35,4 @@ const ProductSlideshow: FC<ProductSlideshowProps> = ({ images }) => {
     );
 }
 
-export default ProductSlideshow;
 

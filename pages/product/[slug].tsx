@@ -1,22 +1,12 @@
-import { GetStaticPaths } from 'next'
-import { GetStaticProps } from 'next'
-import { GetServerSideProps } from 'next'
-import { NextPage } from "next";
+import { useState, useContext } from 'react';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Grid, Box, Typography, Button, Chip } from "@mui/material";
 import { ShopLayout } from "../../components/layouts";
-import { SizeSelector } from "../../components/products";
-import ProductSlideshow from "../../components/products/ProductSlideshow";
-import { ItemCounter } from "../../components/ui";
-import { initialData } from '../../database/products';
-import { dbProducts } from '../../database';
-import { IProduct, ICartProduct } from '../../interfaces';
-import { useState, useContext } from 'react';
-import { ISize } from '../../interfaces/products';
 import { CartContext } from '../../context/cart/CartContext';
-
-
-
-const product = initialData.products[0]; //temporal
+import { SizeSelector, ProductSlideshow } from "../../components/products";
+import { ItemCounter } from "../../components/ui";
+import { dbProducts } from '../../database';
+import { IProduct, ICartProduct, ISize } from '../../interfaces';
 
 
 interface Props {

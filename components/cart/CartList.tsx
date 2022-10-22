@@ -1,7 +1,6 @@
 import NextLink from 'next/link';
-import { Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
+import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from '@mui/material';
 import { initialData } from '../../database/products';
-import { Box } from '@mui/system';
 import { ItemCounter } from '../ui';
 import { FC } from 'react';
 
@@ -45,9 +44,14 @@ export const CartList: FC<Props> = ({ editable = false }) => {
   
                                 {
                                     editable ?
-                                        <ItemCounter /> : <Typography variant='h5'>3 items</Typography>
+                                        <ItemCounter 
+                                            updateQuantity={ () => {} }
+                                            
+                                            /> : <Typography variant='h5'>3 items</Typography>
                                 }
-                                <ItemCounter />
+                                <ItemCounter 
+                                    updateQuantity={ () => {} }
+                                />
                             </Box>
 
                         </Grid>
