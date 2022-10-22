@@ -10,8 +10,9 @@ import { ItemCounter } from "../../components/ui";
 import { initialData } from '../../database/products';
 import { dbProducts } from '../../database';
 import { IProduct, ICartProduct } from '../../interfaces';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { ISize } from '../../interfaces/products';
+import { CartContext } from '../../context/cart/CartContext';
 
 
 
@@ -43,8 +44,13 @@ export const ProductPage: NextPage<Props> = ({ product }) => {
     }))
   }
 
+  const { addProductToCart } = useContext(CartContext);
+
   const onAddProduct = () => {
-    console.log({ tempCartProduct })
+    if ( !tempCartProduct.size ) { return; }
+    addProductToCart( tempCartProduct );
+
+    // router.push('/cart')
   }
 
   const updateQuantity = ( quantity: number) => {
