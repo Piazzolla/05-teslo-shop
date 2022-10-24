@@ -1,7 +1,7 @@
 import { FC, useReducer, useEffect } from 'react';
-import { ICartProduct } from '../../interfaces';
 import { CartContext, cartReducer } from './';
 import Cookie from 'js-cookie';
+import { ICartProduct } from '../../interfaces/cart';
 
 export interface CartState {
    cart: ICartProduct[];
@@ -84,12 +84,18 @@ export const CartProvider: FC<Props> = ({ children }) => {
 
    }
 
+   const updateCartQuantity = (product: ICartProduct)  => {
+      dispatch({ type: '[Cart] - Change Product Quantity', payload: product})
+   }
+
    return (
       <CartContext.Provider value={{
          ...state,
 
          //methods
-         addProductToCart
+         addProductToCart,
+         updateCartQuantity
+
       }}>
          {children}
       </CartContext.Provider>
