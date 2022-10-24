@@ -2,13 +2,22 @@ import { FC, useReducer, useEffect } from 'react';
 import { CartContext, cartReducer } from './';
 import Cookie from 'js-cookie';
 import { ICartProduct } from '../../interfaces/cart';
+import { OrderSummary } from '../../components/cart/OrderSummary';
 
 export interface CartState {
    cart: ICartProduct[];
+   numberOfItems: number;
+   subTotal: number;
+   tax: number;
+   total: number;
 }
 
 const CART_INITIAL_STATE: CartState = {
-   cart: []
+   cart: [],
+   numberOfItems: 0,
+   subTotal: 0,
+   tax: 0,
+   total: 0,
 }
 
 
@@ -53,6 +62,22 @@ export const CartProvider: FC<Props> = ({ children }) => {
       Cookie.set('cart', JSON.stringify(state.cart));
    }, [state.cart])
 
+   useEffect(() => {
+
+      const numberOfItems = state.cart.reduce((prev, current) => current.quantity + prev, 0)
+      const subTotal = state.cart.reduce((prev, current) => (current.price * current.quantity) + prev, 0)
+      const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0);
+
+      const orderSumary = {
+         numberOfItems,
+         subTotal,
+         tax: subTotal * taxRate,
+         total: subTotal * (taxRate + 1)
+      }
+
+      dispatch({ type: '[Cart] - Update Cart Summary', payload: orderSumary})
+   }, [state.cart])
+
 
    const addProductToCart = (product: ICartProduct) => {
       // asi no
@@ -84,12 +109,12 @@ export const CartProvider: FC<Props> = ({ children }) => {
 
    }
 
-   const updateCartQuantity = (product: ICartProduct)  => {
-      dispatch({ type: '[Cart] - Change Product Quantity', payload: product})
+   const updateCartQuantity = (product: ICartProduct) => {
+      dispatch({ type: '[Cart] - Change Product Quantity', payload: product })
    }
 
    const removeCartProduct = (product: ICartProduct) => {
-      dispatch({ type: '[Cart] - Remove Product In Cart', payload: product})
+      dispatch({ type: '[Cart] - Remove Product In Cart', payload: product })
    }
 
    return (
