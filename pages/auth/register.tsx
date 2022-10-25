@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import NextLink from 'next/link';
 import { Box, Grid, Typography, TextField, Button, Link, Chip } from '@mui/material';
 import { ErrorOutline } from '@mui/icons-material';
@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 import { AuthLayout } from "../../components/layouts"
 import { tesloApi } from '../../api';
 import { validations } from '../../utils';
+import { useRouter } from 'next/router';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 
 type FormData = {
@@ -18,24 +20,30 @@ type FormData = {
 
 export const RegisterPage = () => {
 
+    const router = useRouter();
+    const { registerUser } = useContext(AuthContext)
+
     const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
 
     const onRegisterForm = async ({ email, password, name }: FormData) => {
         // cuando el registro es valido lo llamamos aca
 
         setShowError(false);
+        const { hasError, message } = await registerUser(name, email, password);
 
-        try {
-            const { data } = await tesloApi.post('/user/register', { email, password, name });
-            const { token, user } = data;
-        } catch (error) {
+        if( hasError ) {
             setShowError(true);
+            setErrorMessage( message! );
             setTimeout(() => {
                 setShowError(false)
             }, 3000);
+            return;
         }
+
+        router.replace('/');
     }
 
     return (
