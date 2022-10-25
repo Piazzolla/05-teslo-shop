@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import NextLink from 'next/link';
-import { Box, Grid, Typography, TextField, Button, Link } from '@mui/material';
-import { AuthLayout } from "../../components/layouts"
+import { Box, Grid, Typography, TextField, Button, Link, Chip } from '@mui/material';
+import { ErrorOutline } from '@mui/icons-material';
 import { useForm } from 'react-hook-form';
+
+import { AuthLayout } from "../../components/layouts"
 import { validations } from '../../utils';
+import tesloApi from '../../api/tesloApi';
 
 type FormData = {
     email: string,
@@ -13,18 +17,41 @@ type FormData = {
 export const LoginPage = () => {
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
+    const [showError, setShowError] = useState(false);
 
-    const onLoginUser = (data: FormData) => {
+    
+    const onLoginUser = async ({ email, password }: FormData) => {
+
+        setShowError( false );
+        
+        try {
+            const { data } = await tesloApi.post('/user/login', { email, password });
+            const { token, user } = data;
+
+        } catch (error) {
+ //           console.log('Error en las credenciales')
+            setShowError( true );
+            setTimeout(() => {
+                setShowError(false)
+            }, 3000);
+        }
 
     }
     return (
         <AuthLayout title={'Ingresar'}>
-            <form onSubmit={handleSubmit(onLoginUser)}>
+            <form onSubmit={handleSubmit(onLoginUser)} noValidate>
 
                 <Box sx={{ width: 350, padding: '10px 20px' }}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
                             <Typography variant='h1' component='h1'>Iniciar Sesion</Typography>
+                            <Chip 
+                            label="No reconocemos ese usuario / password" 
+                            color="error"
+                            icon={<ErrorOutline />}
+                            className="fadeIn" 
+                            sx={{ display: showError ? 'flex' : 'none '}}
+                            />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField label="Correo" variant='filled' fullWidth type='email'
