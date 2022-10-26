@@ -19,6 +19,8 @@ type FormData = {
 export const LoginPage = () => {
 
     const router = useRouter()
+//    const { asPath } = router;
+    const dest = router.query.p?.toString() || '/';
 
     const { loginUser } = useContext( AuthContext )
 
@@ -39,8 +41,8 @@ export const LoginPage = () => {
             }, 3000);
             return;
         }
-
-        router.replace('/'); //TODO: mandar al usr a la pagina anterior
+        const destination = router.query.p?.toString() || '/';
+        router.replace(destination); //TODO: mandar al usr a la pagina anterior
 
     }
     return (
@@ -89,7 +91,7 @@ export const LoginPage = () => {
                             </Button>
                         </Grid>
                         <Grid item xs={12} display='flex' justifyContent={'end'}>
-                            <NextLink href="/auth/register" passHref>
+                            <NextLink href={`/auth/register?p=${dest}`} passHref>
                                 <Link underline='always'>
                                     No tienes cuenta?
                                 </Link>

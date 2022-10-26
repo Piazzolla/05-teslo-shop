@@ -8,7 +8,8 @@ export const SideMenu = () => {
 
     const router = useRouter();
 
-    const { isLoggedIn, user } = useContext(AuthContext);
+    const { asPath } = router;
+    const { isLoggedIn, user, logout } = useContext(AuthContext);
 
     const [searchTerm, setSearchTerm] = useState('')
 
@@ -23,6 +24,10 @@ export const SideMenu = () => {
         if (searchTerm.trim().length === 0) return;
         navigateTo(`/search/${searchTerm}`);
 
+    }
+
+    const onLogout = () => {
+        logout();
     }
 
     const inputEl = useRef<HTMLInputElement>(null);
@@ -122,14 +127,14 @@ export const SideMenu = () => {
 
                     {
                         isLoggedIn ? (
-                            <ListItemButton>
+                            <ListItemButton onClick={ onLogout }>
                                 <ListItemIcon>
                                     <LoginOutlined />
                                 </ListItemIcon>
                                 <ListItemText primary={'Salir'} />
                             </ListItemButton>
                         ) : (
-                            <ListItemButton>
+                            <ListItemButton onClick={ () => navigateTo(`/auth/login?p=${ router.asPath }`) }>
                                 <ListItemIcon>
                                     <VpnKeyOutlined />
                                 </ListItemIcon>

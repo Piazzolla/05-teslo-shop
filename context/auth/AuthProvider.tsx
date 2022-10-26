@@ -4,6 +4,7 @@ import { IUser } from '../../interfaces/user';
 import tesloApi from '../../api/tesloApi';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 export interface AuthState {
    isLoggedIn: boolean;
@@ -22,7 +23,7 @@ type Props = {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
 
-
+   const router = useRouter();
    const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
 
 
@@ -85,13 +86,21 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       }
    }
 
+   const logout = () => {
+      Cookies.remove('token');
+      Cookies.remove('cart');
+      router.reload(); //hace un refresh de la app, como ctrl r
+
+   }
+
    return (
       <AuthContext.Provider value={{
          ...state,
 
          //Methods
          loginUser,
-         registerUser
+         registerUser,
+         logout
 
       }}>
          {children}

@@ -22,6 +22,7 @@ export const RegisterPage = () => {
 
     const router = useRouter();
     const { registerUser } = useContext(AuthContext)
+    const dest = router.query.p?.toString() || '/';
 
     const { register, handleSubmit, watch, formState: { errors } } = useForm<FormData>();
     const [showError, setShowError] = useState(false);
@@ -43,7 +44,7 @@ export const RegisterPage = () => {
             return;
         }
 
-        router.replace('/');
+        router.replace(dest);
     }
 
     return (
@@ -101,7 +102,7 @@ export const RegisterPage = () => {
                             </Button>
                         </Grid>
                         <Grid item xs={12} display='flex' justifyContent={'end'}>
-                            <NextLink href="/auth/login" passHref>
+                            <NextLink href={`/auth/login?p=${dest}`} passHref>
                                 <Link underline='always'>
                                     Ya tienes cuenta?
                                 </Link>
