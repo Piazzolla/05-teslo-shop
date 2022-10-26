@@ -1,12 +1,12 @@
+import { useContext } from 'react';
 import { GetServerSideProps } from 'next'
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { ShopLayout } from "../../components/layouts";
-import { countries } from '../../utils';
 import Cookies from 'js-cookie';
-import { useContext } from 'react';
 import { CartContext } from '../../context';
+import { countries } from '../../utils/countries';
 
 type FormData = {
     firstName: string;
@@ -32,7 +32,6 @@ const getAddressFromCookies = ():FormData => {
         country     : Cookies.get('country')    || '',
         phone       : Cookies.get('phone')      || '',
     }
-
 }
 
 export const AddressPage = () => {
@@ -129,7 +128,7 @@ export const AddressPage = () => {
                         <FormControl fullWidth>
                             <Select variant='filled'
                                 label="Pais"
-                                value={countries[0].code}
+                                value={Cookies.get('country') || countries[0].code}
                                 {
                                 ...register('country', {
                                     required: 'Este campo es requerido',
