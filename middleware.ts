@@ -23,6 +23,6 @@ export const config = {
     //matcher: '/about/:path*',
       matcher: [
        //   '/api/:path', 
-          '/checkout/:path/'
+          '/checkout/address/',
       ]
   }
