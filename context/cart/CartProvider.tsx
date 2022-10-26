@@ -5,6 +5,7 @@ import { ICartProduct } from '../../interfaces/cart';
 import { OrderSummary } from '../../components/cart/OrderSummary';
 
 export interface CartState {
+   isLoaded: boolean;
    cart: ICartProduct[];
    numberOfItems: number;
    subTotal: number;
@@ -13,6 +14,7 @@ export interface CartState {
 }
 
 const CART_INITIAL_STATE: CartState = {
+   isLoaded: false,
    cart: [],
    numberOfItems: 0,
    subTotal: 0,
