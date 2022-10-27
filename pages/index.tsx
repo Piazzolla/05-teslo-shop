@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import { Typography } from '@mui/material';
+
 import { ShopLayout } from '../components/layouts/ShopLayout';
 import { ProductList } from '../components/products';
 import { useProducts } from '../hooks';
@@ -8,6 +9,7 @@ import { IProduct } from '../interfaces/products';
 
 
 const HomePage: NextPage = () => {
+  
 
   const { products, isLoading } = useProducts('/products') as { products: IProduct[], isLoading: boolean};
 
