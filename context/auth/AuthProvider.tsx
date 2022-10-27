@@ -1,5 +1,5 @@
 import { FC, useReducer, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
 import axios from 'axios';
@@ -26,7 +26,7 @@ type Props = {
 
 export const AuthProvider: FC<Props> = ({ children }) => {
 
-   const { data, status } = useSession();
+   const { data, status: sessionStatus} = useSession();
  
 
    const router = useRouter();
@@ -39,11 +39,11 @@ export const AuthProvider: FC<Props> = ({ children }) => {
 
 
    useEffect(() => {
-      if(status === 'authenticated') {
-       //TODO:  dispatch({ type: '[Auth] - Login', payload: data?.user as IUser})
+      if(sessionStatus === 'authenticated') {
+         dispatch({ type: '[Auth] - Login', payload: data?.user as IUser})
       }
    
-   }, [status, data])
+   }, [sessionStatus, data])
    
    const checkToken = async () => {
 
@@ -101,9 +101,8 @@ export const AuthProvider: FC<Props> = ({ children }) => {
    }
 
    const logout = () => {
-      Cookies.remove('token');
       Cookies.remove('cart');
-
+      
       Cookies.remove('firstName' );
       Cookies.remove('lastName' );
       Cookies.remove('address' );
@@ -112,9 +111,11 @@ export const AuthProvider: FC<Props> = ({ children }) => {
       Cookies.remove('city' );
       Cookies.remove('country' );
       Cookies.remove('phone' );
-
-      router.reload(); //hace un refresh de la app, como ctrl r
-
+      
+      signOut();
+      //router.reload(); //hace un refresh de la app, como ctrl r // deja de ser necesario con el signOut de next-auth
+     // Cookies.remove('token');
+      
    }
 
    return (
