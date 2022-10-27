@@ -1,3 +1,4 @@
+import { GetServerSideProps } from 'next'
 import { useContext, useState } from 'react';
 import NextLink from 'next/link';
 import { Box, Grid, Typography, TextField, Button, Link, Chip } from '@mui/material';
@@ -9,6 +10,7 @@ import { AuthLayout } from "../../components/layouts"
 import { validations } from '../../utils';
 import tesloApi from '../../api/tesloApi';
 import { useRouter } from 'next/router';
+import { getSession, signIn } from 'next-auth/react';
 
 type FormData = {
     email: string,
@@ -30,20 +32,21 @@ export const LoginPage = () => {
     
     
     const onLoginUser = async ({ email, password }: FormData) => {
-        const isValidLogin =  await loginUser( email, password);
         
         setShowError( false );
+        
+        // const isValidLogin =  await loginUser( email, password);
+        // if ( !isValidLogin ) {
+        //     setShowError( true );
+        //     setTimeout(() => {
+        //         setShowError(false)
+        //     }, 3000);
+        //     return;
+        // }
+        // const destination = router.query.p?.toString() || '/';
+        // router.replace(destination); 
 
-        if ( !isValidLogin ) {
-            setShowError( true );
-            setTimeout(() => {
-                setShowError(false)
-            }, 3000);
-            return;
-        }
-        const destination = router.query.p?.toString() || '/';
-        router.replace(destination); //TODO: mandar al usr a la pagina anterior
-
+        await signIn('credentials', { email, password });
     }
     return (
         <AuthLayout title={'Ingresar'}>
@@ -106,6 +109,32 @@ export const LoginPage = () => {
 
         </AuthLayout>
     )
+}
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+/* esto lo voy a usar porque no quiero mostrar mi custom login si ya hay un usuario logueado
+como se si hay un usuario en el lado del servidor porque me llega con las cookies
+puedo ocuparme de que no muestre la LoginPage del lado del servidor */ 
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+    
+    const session = await getSession({ req });
+    const { p = '/' } = query;
+
+        if (session) {
+            return {
+                redirect: {
+                    destination: p.toString(),
+                    permanent: false
+                }
+            }
+        } 
+
+    return {
+        props: {
+            
+        }
+    }
 }
 
 export default LoginPage;

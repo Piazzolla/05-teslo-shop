@@ -26,6 +26,12 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
 
+    // Custom Pages
+    pages: {
+        signIn: '/auth/login',
+        newUser: '/auth/register'
+    },
+
     // Callbacks
 
     jwt: {
@@ -33,6 +39,13 @@ export const authOptions: NextAuthOptions = {
 
 
     },
+
+    session: {
+        maxAge: 2592000, // 30 dias
+        strategy: 'jwt',
+        updateAge: 86400, // cada dia
+    },
+
     callbacks: {
         async jwt({ token, account, user }) {
 
@@ -40,7 +53,7 @@ export const authOptions: NextAuthOptions = {
                 token.accessToken = account.access_token;
                 switch (account.type) {
                     case 'oauth':
-                        //TODO: crear usuario o verificar si existe en db
+                        token.user = await dbUsers.oAuthToDbUser( user?.email ||  '', user?.name || '');
                         break;
                     case 'credentials':
                         token.user = user;
