@@ -3,18 +3,33 @@ import { Box, Button, Card, CardContent, Divider, Grid, Link, Typography } from 
 import { ShopLayout } from "../../components/layouts"
 import { CartList } from '../../components/cart/CartList';
 import { OrderSummary } from "../../components/cart";
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { CartContext } from '../../context/cart/CartContext';
 import { ShippingAddress } from '../../context/cart/CartProvider';
 import { countries } from '../../utils';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
 
 const SummaryPage = () => {
 
+    const router = useRouter();
     const { shippingAddress, numberOfItems } = useContext(CartContext);
+
+
+    useEffect(() => {
+      if( !Cookies.get('firstName')) { //deberia chequear todos los datos
+        router.push('/checkout/address');
+      }
+    
+    }, [ router ])
+    
+
 
     if( !shippingAddress) {
         return <></>
     }
+
+
 
     const { firstName, lastName, address, address2, city, country, phone, zip } = shippingAddress;
 

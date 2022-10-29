@@ -40,7 +40,7 @@ export const AddressPage = () => {
 
     const { updateAddress} = useContext(CartContext);
 
-    const { getValues, register, handleSubmit, formState: { errors } } = useForm<FormData>({
+    const { getValues, register, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
         defaultValues: getAddressFromCookies()
     });
 
