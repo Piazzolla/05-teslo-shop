@@ -5,7 +5,6 @@ import { CartList } from '../../components/cart/CartList';
 import { OrderSummary } from "../../components/cart";
 import { useContext, useEffect } from 'react';
 import { CartContext } from '../../context/cart/CartContext';
-import { ShippingAddress } from '../../context/cart/CartProvider';
 import { countries } from '../../utils';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/router';
@@ -13,7 +12,7 @@ import { useRouter } from 'next/router';
 const SummaryPage = () => {
 
     const router = useRouter();
-    const { shippingAddress, numberOfItems } = useContext(CartContext);
+    const { shippingAddress, numberOfItems, createOrder } = useContext(CartContext);
 
 
     useEffect(() => {
@@ -21,7 +20,11 @@ const SummaryPage = () => {
         router.push('/checkout/address');
       }
     
-    }, [ router ])
+    }, [ router ]);
+
+    const onCreateOrder = () => {
+        createOrder();
+    }
     
 
 
@@ -71,7 +74,12 @@ const SummaryPage = () => {
 
                             <OrderSummary />
                             <Box sx={{ mt: 3 }}>
-                                <Button color="secondary" className='circular-btn' fullWidth>
+                                <Button 
+                                    color="secondary" 
+                                    className='circular-btn' 
+                                    fullWidth
+                                    onClick={ onCreateOrder }
+                                    >
                                     Confirmar Orden
                                 </Button>
                             </Box>
