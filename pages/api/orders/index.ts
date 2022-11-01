@@ -3,56 +3,75 @@ import { getSession } from 'next-auth/react';
 import { createRouteLoader } from 'next/dist/client/route-loader'
 import { db } from '../../../database';
 import { IOrder } from '../../../interfaces/order';
+import { Order } from '../../../models';
 import Product from '../../../models/Product';
 
-type Data = {
-    message: string
-}
+type Data = | { message: string }
+            | IOrder;
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
-    switch( req.method ) {
+    switch (req.method) {
         case 'POST':
-            return createOrder( req, res );
+            return createOrder(req, res);
         default:
-            return res.status(400).json({ message: 'Bad Request'})
+            return res.status(400).json({ message: 'Bad Request' })
     }
 
 
 }
 
-const createOrder = async(req: NextApiRequest, res: NextApiResponse<Data>) => {
+const createOrder = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { orderItems, total } = req.body as IOrder;
 
     // Verificar que tenemos un usuario
     const session: any = await getSession({ req });
 
-    if( !session ) {
-        return res.status(401).json({ message: 'Debe estar autenticado para hacer esto'});
+    if (!session) {
+        return res.status(401).json({ message: 'Debe estar autenticado para hacer esto' });
     }
 
     // Crear un arreglo con los productos que la persona quiere
-    const productsIds = orderItems.map( product => product._id );
+    const productsIds = orderItems.map(product => product._id);
 
     await db.connect();
 
     // los obtengo de la base de datos para cotejar los precios con lo que viene del front
-    const dbProducts = await Product.find({ _id: {$in: productsIds }}).lean();
+    const dbProducts = await Product.find({ _id: { $in: productsIds } });
 
     try {
-        const subTotal = orderItems.reduce( (prev, current) => {
-            const currentPrice = dbProducts.find( prod => prod._id === current._id)?.price
-            if( !currentPrice ) {
+        const subTotal = orderItems.reduce((prev, current) => {
+            const currentPrice = dbProducts.find(prod => prod.id === current._id)?.price
+            if (!currentPrice) {
                 throw new Error('Verifique el carrito de nuevo, producto no existe'); //no deberia pasar si no se manipula la orden desde el frontend
             }
             return (currentPrice * current.quantity) + prev
         }, 0)
-    } catch (error) {
-        
+
+        const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE || 0)
+        const backendTotal = subTotal * (taxRate + 1);
+
+        if (total !== backendTotal) {
+            throw new Error('El total no cuadra con el monto');
+        }
+
+        // Todo bien hasta este punto
+        const userId = session.user._id;
+        const newOrder = new Order({ ...req.body, isPaid: false, user: userId });
+        await newOrder.save();
+
+        return res.status(201).json( newOrder );
+
+    } catch (error: any) {
+        await db.disconnect();
+        console.log(error);
+        res.status(400).json({
+            message: error.message || 'Revise los logs del servidor'
+        })
     }
 
 
 
 
-    return res.status(201).json( req.body )
+    return res.status(201).json(req.body)
 }
