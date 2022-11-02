@@ -3,15 +3,13 @@ import NextLink from 'next/link';
 import { Link } from '@mui/material';
 import { Grid, Typography, Chip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'
-import { GridColDef, GridRenderCellParams, GridValueGetterParams } from '@mui/x-data-grid/models';
+import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models';
 
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { getSession } from 'next-auth/react';
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
-import { IUser } from '../../interfaces/user';
-import { useContext } from 'react';
-import { AuthContext } from '../../context/auth/AuthContext';
+
 
 const columns: GridColDef[] = [
     { field: 'id', headerName: 'ID', width: 100 },

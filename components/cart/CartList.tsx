@@ -14,14 +14,17 @@ interface Props {
 
 export const CartList: FC<Props> = ({ editable = false, products = [] }) => {
 
+    console.log('cart list');
+//    console.log(products);
     const { cart: productsInCart, updateCartQuantity, removeCartProduct } = useContext(CartContext);
 
+    console.log(productsInCart);
     const onNewCartQuantityValue = (product: ICartProduct, newQuantityValue: number) => {
         product.quantity = newQuantityValue;
         updateCartQuantity( product )
     }
 
-    const productsToShow = products? products: productsInCart;
+    const productsToShow = products.length === 0? productsInCart : products;
 
 
     return (

@@ -17,7 +17,9 @@ export const OrderSummary: NextPage<Props> = ( {order} ) => {
 
     const { numberOfItems, subTotal, total, tax} = useContext(CartContext);
     
+    console.log({order})
     if( !order ) {
+        console.log('HOLA')
         order = { numberOfItems, subTotal, total, tax};
     }
 
