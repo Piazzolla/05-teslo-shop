@@ -4,13 +4,23 @@ import { getToken } from 'next-auth/jwt';
  
 export default async function middleware(req: NextRequest | any) {
  
-    const session = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    const session: any = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
 
     if( !session ) {
         const { pathname, origin } = req.nextUrl;
 
         return NextResponse.redirect(`${origin}/auth/login?p=${pathname}`);
     }
+
+    
+    if (req.nextUrl.pathname.startsWith('/admin')) {
+        const validRoles=['admin', 'super-user', 'SEO'];
+        if( !validRoles.includes(session.user.role)) {
+            return NextResponse.redirect(new URL('/', req.url));
+        }
+
+    }    
+
 
     return NextResponse.next();
 
@@ -34,5 +44,6 @@ export default async function middleware(req: NextRequest | any) {
 
 export const config = {
     //matcher: '/about/:path*',
-      matcher: ['/checkout/address', '/checkout/summary']
+      matcher: ['/checkout/address', '/checkout/summary', '/admin'
+      ]
   }
