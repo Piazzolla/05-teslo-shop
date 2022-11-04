@@ -172,7 +172,8 @@ export const CartProvider: FC<Props> = ({ children }) => {
          subTotal: state.subTotal,
          tax: state.tax,
          total: state.total,
-         isPaid: false 
+         isPaid: false,
+          
       }
 
       try {
