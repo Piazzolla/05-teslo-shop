@@ -172,7 +172,8 @@ export const SideMenu = () => {
                                 <ListItemText primary={'Ordenes'} />
                             </ListItemButton>
 
-                            <ListItemButton>
+                            <ListItemButton
+                            onClick={ () => navigateTo(`/admin/users`)}>
                                 <ListItemIcon>
                                     <AdminPanelSettings />
                                 </ListItemIcon>
