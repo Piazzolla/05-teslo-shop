@@ -32,6 +32,7 @@ export const AdminLayout: FC<Props> = ({ children, title, subTitle, icon }) => {
                 <Box display='flex' flexDirection='column'>
                     <Typography variant='h1' component='h1'>
                         {icon}
+                        {' '}
                         {title}
                     </Typography>
                     <Typography variant='h1' sx={{ mb: 1 }}>{subTitle}</Typography>

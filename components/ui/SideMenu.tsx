@@ -83,7 +83,7 @@ export const SideMenu = () => {
                                     <ListItemText primary={'Perfil'} />
                                 </ListItemButton>
 
-                                <ListItemButton onClick={() => navigateTo('/orders/history') } >
+                                <ListItemButton onClick={() => navigateTo('/orders/history')} >
                                     <ListItemIcon>
                                         <ConfirmationNumberOutlined />
                                     </ListItemIcon>
@@ -127,14 +127,14 @@ export const SideMenu = () => {
 
                     {
                         isLoggedIn ? (
-                            <ListItemButton onClick={ onLogout }>
+                            <ListItemButton onClick={onLogout}>
                                 <ListItemIcon>
                                     <LoginOutlined />
                                 </ListItemIcon>
                                 <ListItemText primary={'Salir'} />
                             </ListItemButton>
                         ) : (
-                            <ListItemButton onClick={ () => navigateTo(`/auth/login?p=${ router.asPath }`) }>
+                            <ListItemButton onClick={() => navigateTo(`/auth/login?p=${router.asPath}`)}>
                                 <ListItemIcon>
                                     <VpnKeyOutlined />
                                 </ListItemIcon>
@@ -153,7 +153,7 @@ export const SideMenu = () => {
                             <Divider />
                             <ListSubheader>Admin Panel</ListSubheader>
 
-                            <ListItemButton onClick={ () => navigateTo(`/admin/`)}>
+                            <ListItemButton onClick={() => navigateTo(`/admin/`)}>
                                 <ListItemIcon>
                                     <DashboardOutlined />
                                 </ListItemIcon>
@@ -165,7 +165,8 @@ export const SideMenu = () => {
                                 </ListItemIcon>
                                 <ListItemText primary={'Productos'} />
                             </ListItemButton>
-                            <ListItemButton>
+                            <ListItemButton
+                                onClick={() => navigateTo(`/admin/orders`)}>
                                 <ListItemIcon>
                                     <ConfirmationNumberOutlined />
                                 </ListItemIcon>
@@ -173,7 +174,7 @@ export const SideMenu = () => {
                             </ListItemButton>
 
                             <ListItemButton
-                            onClick={ () => navigateTo(`/admin/users`)}>
+                                onClick={() => navigateTo(`/admin/users`)}>
                                 <ListItemIcon>
                                     <AdminPanelSettings />
                                 </ListItemIcon>
