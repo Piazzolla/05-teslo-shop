@@ -192,7 +192,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
         return {
 
             redirect: {
-                destination: `/auth/history`,
+                destination: `/orders/history`,
                 permanent: false,
             }
         }
@@ -201,7 +201,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, query }) => 
     if (order.user !== session.user._id) {
         return {
             redirect: {
-                destination: `/auth/history`,
+                destination: `/orders/history`,
                 permanent: false,
             }
         }
