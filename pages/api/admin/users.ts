@@ -42,7 +42,7 @@ const updateUser = async(req: NextApiRequest, res: NextApiResponse<Data>) => {
         return res.status(400).json({ message: 'Bad request' });
     }
     
-    const validRoles = ['admin', 'super-user', 'client'];
+    const validRoles = ['admin', 'super-user', 'client', 'SEO'];
     if (!validRoles.includes(role)) {
         await db.disconnect();
         return res.status(400).json({ message: 'Rol no permitido: ' + validRoles.join(', ') });
