@@ -12,6 +12,9 @@ export const getProductBySlug = async( slug: string): Promise<IProduct | null> =
         return null;
     }
 
+    // TODO:
+    // un procesamiento de las imagenes cuando las subamos al server
+
     return JSON.parse( JSON.stringify( product )); /* 
     esto de json parse y json stringify lo hace en general cuando la data viene con 
     un id o una fecha que conviene serializar

@@ -1,10 +1,11 @@
 import {  CategoryOutlined } from '@mui/icons-material';
-import {  CardMedia, Grid } from "@mui/material"
+import {  CardMedia, Grid, Link } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { AdminLayout } from "../../components/layouts"
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models';
 import useSWR from "swr";
 import { IProduct } from '../../interfaces/products';
+import NextLink from 'next/link';
 
 
 const columns: GridColDef[] = [
@@ -25,7 +26,21 @@ const columns: GridColDef[] = [
             )
         }
     },
-    { field: 'title', headerName: 'Title', width: 250 },
+    { 
+        field: 'title', 
+        headerName: 'Title', 
+        width: 250,
+        renderCell: ({ row }: GridRenderCellParams ) => {
+            return (
+                <NextLink href={`/admin/products/${ row.slug }`} passHref>
+                    <Link underline='always'>
+                        {row.title}
+                    </Link>
+                </NextLink>
+
+            )
+        } 
+    },
     { field: 'gender', headerName: 'Genero'},
     { field: 'type', headerName: 'Tipo' },
     { field: 'inStock', headerName: 'Inventario' },
