@@ -49,6 +49,15 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
         console.log(form);
     }
 
+    const onChangeSize = ( size: string) => {
+        const currentSizes = getValues('sizes');
+        if(currentSizes.includes( size )) {
+            return setValue('sizes', currentSizes.filter( s => s !== size), { shouldValidate: true})
+        }
+
+        setValue( 'sizes', [...currentSizes, size], {shouldValidate: true});
+    }
+
     return (
         <AdminLayout
             title={'Producto'}
@@ -201,7 +210,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                             defaultValue={undefined}
                             render={({ field }) => (
                                 <FormControl>
-                                    <FormLabel>Tipo</FormLabel>
+                                    <FormLabel>Genero</FormLabel>
                                     <RadioGroup row {...field}>
                                         {validGender.map((option) => (
                                             <FormControlLabel
@@ -220,7 +229,11 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                             <FormLabel>Tallas</FormLabel>
                             {
                                 validSizes.map(size => (
-                                    <FormControlLabel key={size} control={<Checkbox />} label={size} />
+                                    <FormControlLabel key={size} 
+                                    control={<Checkbox checked={ getValues('sizes').includes(size)}/>} 
+                                    label={size} 
+                                    onChange={ () => onChangeSize( size )}
+                                    />
                                 ))
                             }
                         </FormGroup>
