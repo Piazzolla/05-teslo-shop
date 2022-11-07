@@ -6,6 +6,8 @@ import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons
 import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { watch } from 'fs';
 
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats']
@@ -37,9 +39,29 @@ interface Props {
 const ProductAdminPage: FC<Props> = ({ product }) => {
 
 
-    const { register, handleSubmit, formState: { errors }, getValues, setValue, control } = useForm<FormData>({
+    const { register, handleSubmit, formState: { errors }, getValues, setValue, control, watch } = useForm<FormData>({
         defaultValues: product
     })
+
+    useEffect(() => {
+      
+      const subscription = watch(( value, { name, type} ) => {
+        //console.log({ value, name, type})
+        if( name === 'title') {
+            const newSlug = value.title?.trim()
+                .replaceAll(' ', '_')
+                .replaceAll("'", '')
+                .toLocaleLowerCase() || '';
+
+            setValue('slug', newSlug)
+        }
+      })
+    
+      return () => {
+        subscription.unsubscribe();
+      }
+    }, [watch, setValue])
+    
 
     const onDeleteTag = (tag: string) => {
 
@@ -97,7 +119,8 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                             label="Descripción"
                             variant="filled"
                             fullWidth
-                            multiline
+                            multiline={true}
+                            rows={5}
                             sx={{ mb: 1 }}
                             {...register('description', {
                                 required: 'Este campo es requerido',
@@ -232,7 +255,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                                     <FormControlLabel key={size} 
                                     control={<Checkbox checked={ getValues('sizes').includes(size)}/>} 
                                     label={size} 
-                                    onChange={ () => onChangeSize( size )}
+                                    onChange={ ( ) => onChangeSize( size )}
                                     />
                                 ))
                             }
