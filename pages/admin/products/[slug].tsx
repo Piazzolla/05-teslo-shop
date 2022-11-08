@@ -8,6 +8,7 @@ import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, 
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
 import { watch } from 'fs';
+import tesloApi from '../../../api/tesloApi';
 
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats']
@@ -38,7 +39,8 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
 
-    const [newTagValue, setNewTagValue] = useState('')
+    const [newTagValue, setNewTagValue] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue, control, watch } = useForm<FormData>({
         defaultValues: product
@@ -90,10 +92,6 @@ entonces los cambios a currentTags impactan en los values */
 
     }
 
-    const onSubmit = (form: FormData) => {
-        console.log(form);
-    }
-
     const onChangeSize = ( size: string) => {
         const currentSizes = getValues('sizes');
         if(currentSizes.includes( size )) {
@@ -102,6 +100,33 @@ entonces los cambios a currentTags impactan en los values */
 
         setValue( 'sizes', [...currentSizes, size], {shouldValidate: true});
     }
+
+
+    const onSubmit = async(form: FormData) => {
+        if (form.images.length < 2) return alert('Minimo dos imagenes');
+
+        setIsSaving(true);
+
+        try {
+            const { data } = await tesloApi({
+                url: '/admin/products',
+                method: 'PUT', // TODO: si tenemos un _id, entonces actualizar, si no, crear
+                data: form
+            });
+
+            console.log({data});
+
+            if( !form._id ){
+                // TODO: recargar el navegador
+            } else {
+                setIsSaving(false)
+            }
+        } catch (error) {
+            console.log(error);
+            setIsSaving(false);
+        }
+    }
+
 
     return (
         <AdminLayout
@@ -116,6 +141,7 @@ entonces los cambios a currentTags impactan en los values */
                         startIcon={<SaveOutlined />}
                         sx={{ width: '150px' }}
                         type="submit"
+                        disabled={ isSaving }
                     >
                         Guardar
                     </Button>
