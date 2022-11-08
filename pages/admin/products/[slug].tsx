@@ -6,7 +6,7 @@ import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons
 import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { watch } from 'fs';
 
 
@@ -38,6 +38,7 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
 
+    const [newTagValue, setNewTagValue] = useState('')
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue, control, watch } = useForm<FormData>({
         defaultValues: product
@@ -63,7 +64,29 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     }, [watch, setValue])
     
 
-    const onDeleteTag = (tag: string) => {
+    const onDeleteTag = (tagSelected: string) => {
+        ///console.log(tagSelected);
+        const updatedTags = getValues('tags').filter( tag => ( tag !== tagSelected ));
+
+        setValue('tags', updatedTags, { shouldValidate: true}) //se podria hacer con un Set esto, y por ahi seria mejor
+
+    }
+
+
+    const onNewTag = () => {
+
+        const newTag = newTagValue.trim().toLocaleLowerCase();
+        setNewTagValue('');
+        const currentTags = getValues('tags')
+        if( currentTags.includes( newTag )) {
+            return;
+        }
+        currentTags.push( newTag );
+
+/*        setValue('tags')  no me hace falta esto porque en currentTags tengo la referencia a los values, no solo el valor
+entonces los cambios a currentTags impactan en los values */
+
+
 
     }
 
@@ -285,6 +308,9 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                             fullWidth
                             sx={{ mb: 1 }}
                             helperText="Presiona [spacebar] para agregar"
+                            value={ newTagValue }
+                            onChange={ ({ target }) => setNewTagValue(target.value)}
+                            onKeyUp={ ({code}) => code === 'Space' ? onNewTag() : undefined}
                         />
 
                         <Box sx={{
@@ -296,7 +322,7 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                         }}
                             component="ul">
                             {
-                                product.tags.map((tag) => {
+                                getValues('tags').map((tag) => {
 
                                     return (
                                         <Chip
