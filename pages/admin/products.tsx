@@ -1,5 +1,5 @@
-import {  CategoryOutlined } from '@mui/icons-material';
-import {  CardMedia, Grid, Link } from "@mui/material"
+import {  AddOutlined, CategoryOutlined } from '@mui/icons-material';
+import {  CardMedia, Grid, Link, Box, Button } from "@mui/material"
 import { DataGrid } from "@mui/x-data-grid"
 import { AdminLayout } from "../../components/layouts"
 import { GridColDef, GridRenderCellParams } from '@mui/x-data-grid/models';
@@ -74,6 +74,16 @@ const ProductsPage = () => {
             subTitle={'Mantenimiento de productos'}
             icon={<CategoryOutlined />}
         >
+            <Box display='flex' justifyContent='end' sx={{ smb: 2}}>
+                <Button
+                    startIcon={ <AddOutlined /> }
+                    color="secondary" 
+                    href="/admin/products/new"
+                >
+                    Crear producto
+                </Button>
+
+            </Box>
 
             <Grid container className='fadeIn'>
                 <Grid item xs={12} sx={{ height: 650, width: '100%' }}>

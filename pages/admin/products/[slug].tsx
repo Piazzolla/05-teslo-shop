@@ -1,14 +1,15 @@
-import React, { FC } from 'react'
+import React, { ChangeEvent, FC, useRef } from 'react'
 import { GetServerSideProps } from 'next'
 import { AdminLayout } from '../../../components/layouts'
-import { IProduct } from '../../../interfaces';
-import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
+import { DriveFileRenameOutline, SaveOutlined, TransgenderTwoTone, UploadOutlined } from '@mui/icons-material';
 import { dbProducts } from '../../../database';
 import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useEffect, useState } from 'react';
-import { watch } from 'fs';
 import tesloApi from '../../../api/tesloApi';
+import { IProduct } from '../../../interfaces/products';
+import { Product } from '../../../models';
+import { useRouter } from 'next/router';
 
 
 const validTypes = ['shirts', 'pants', 'hoodies', 'hats']
@@ -39,8 +40,12 @@ interface Props {
 
 const ProductAdminPage: FC<Props> = ({ product }) => {
 
+    const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const [newTagValue, setNewTagValue] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+
 
     const { register, handleSubmit, formState: { errors }, getValues, setValue, control, watch } = useForm<FormData>({
         defaultValues: product
@@ -102,6 +107,21 @@ entonces los cambios a currentTags impactan en los values */
     }
 
 
+    const onFileSelected = ({ target }: ChangeEvent<HTMLInputElement>) => {
+        if(!target.files || target.files.length === 0) {
+            return;
+        }
+        try {
+            for( const file of target.files ) {
+                const fromData = new FormData();
+                console.log( file );
+            }
+        } catch (error) {
+
+        }
+
+    }
+
     const onSubmit = async(form: FormData) => {
         if (form.images.length < 2) return alert('Minimo dos imagenes');
 
@@ -110,7 +130,7 @@ entonces los cambios a currentTags impactan en los values */
         try {
             const { data } = await tesloApi({
                 url: '/admin/products',
-                method: 'PUT', // TODO: si tenemos un _id, entonces actualizar, si no, crear
+                method: form._id? 'PUT' : 'POST', // TODO: si tenemos un _id, entonces actualizar, si no, crear
                 data: form
             });
 
@@ -118,6 +138,7 @@ entonces los cambios a currentTags impactan en los values */
 
             if( !form._id ){
                 // TODO: recargar el navegador
+                router.replace(`/admin/products/${ form.slug }`)
             } else {
                 setIsSaving(false)
             }
@@ -187,7 +208,6 @@ entonces los cambios a currentTags impactan en los values */
                             sx={{ mb: 1 }}
                             {...register('inStock', {
                                 required: 'Este campo es requerido',
-                                minLength: { value: 2, message: 'Mínimo 2 caracteres' },
                                 min: { value: 0, message: 'Minimo de valor cero' }
                             }
                             )}
@@ -372,10 +392,18 @@ entonces los cambios a currentTags impactan en los values */
                                 fullWidth
                                 startIcon={<UploadOutlined />}
                                 sx={{ mb: 3 }}
-                            >
+                                onClick={ () => fileInputRef.current?.click()}
+                            > 
                                 Cargar imagen
                             </Button>
-
+                            <input 
+                                ref={ fileInputRef }
+                                type="file"
+                                multiple
+                                accept='image/png, image/gif, image/jpeg'
+                                style={{ display: 'none' }}
+                                onChange={ onFileSelected }
+                            />
                             <Chip
                                 label="Es necesario al 2 imagenes"
                                 color='error'
@@ -422,7 +450,18 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
     const { slug = '' } = query;
 
-    const product = await dbProducts.getProductBySlug(slug.toString());
+    let product: IProduct | null;
+
+    if ( slug === 'new') {
+        // crear un producto
+        const tempProduct = JSON.parse(JSON.stringify( new Product() ))
+        delete tempProduct._id; /* cuando hago new del modelo de mongoose me genera un id que en este caso no quiero  */
+        tempProduct.images = ['img1.jpg', 'img2.jpg'];
+        product = tempProduct;
+    } else {
+        product = await dbProducts.getProductBySlug(slug.toString());
+    }
+
 
     if (!product) {
         return {
