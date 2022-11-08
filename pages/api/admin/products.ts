@@ -33,11 +33,15 @@ const getProduts =  async(req: NextApiRequest, res: NextApiResponse<Data>) => {
             .lean();
     await db.disconnect();
 
+    const updatedProducts = products.map( product => {
+        product.images = product.images.map( image => {
+            return image.includes('http') ? image: `${ process.env.HOST_NAME}products/${ image }`
+        });
 
-    // TODO:
-    // Tendremos que actualizar las imagenes
+        return product;
+    })
 
-    res.status(200).json( products );
+    res.status(200).json( updatedProducts );
 }
 const updateProduct = async(req: NextApiRequest, res: NextApiResponse<Data>) => {
     const { _id = '', images = []} = req.body as IProduct;

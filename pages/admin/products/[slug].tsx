@@ -415,9 +415,10 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
                                 onChange={onFilesSelected}
                             />
                             <Chip
-                                label="Es necesario al 2 imagenes"
+                                label="Es necesario al menos 2 imagenes"
                                 color='error'
                                 variant='outlined'
+                                sx={{ display: getValues('images').length < 2? 'flex': 'none'}}
                             />
 
                             <Grid container spacing={2}>
