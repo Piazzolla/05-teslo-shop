@@ -52,30 +52,30 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
     })
 
     useEffect(() => {
-      
-      const subscription = watch(( value, { name, type} ) => {
-        //console.log({ value, name, type})
-        if( name === 'title') {
-            const newSlug = value.title?.trim()
-                .replaceAll(' ', '_')
-                .replaceAll("'", '')
-                .toLocaleLowerCase() || '';
 
-            setValue('slug', newSlug)
+        const subscription = watch((value, { name, type }) => {
+            //console.log({ value, name, type})
+            if (name === 'title') {
+                const newSlug = value.title?.trim()
+                    .replaceAll(' ', '_')
+                    .replaceAll("'", '')
+                    .toLocaleLowerCase() || '';
+
+                setValue('slug', newSlug)
+            }
+        })
+
+        return () => {
+            subscription.unsubscribe();
         }
-      })
-    
-      return () => {
-        subscription.unsubscribe();
-      }
     }, [watch, setValue])
-    
+
 
     const onDeleteTag = (tagSelected: string) => {
         ///console.log(tagSelected);
-        const updatedTags = getValues('tags').filter( tag => ( tag !== tagSelected ));
+        const updatedTags = getValues('tags').filter(tag => (tag !== tagSelected));
 
-        setValue('tags', updatedTags, { shouldValidate: true}) //se podria hacer con un Set esto, y por ahi seria mejor
+        setValue('tags', updatedTags, { shouldValidate: true }) //se podria hacer con un Set esto, y por ahi seria mejor
 
     }
 
@@ -85,46 +85,54 @@ const ProductAdminPage: FC<Props> = ({ product }) => {
         const newTag = newTagValue.trim().toLocaleLowerCase();
         setNewTagValue('');
         const currentTags = getValues('tags')
-        if( currentTags.includes( newTag )) {
+        if (currentTags.includes(newTag)) {
             return;
         }
-        currentTags.push( newTag );
+        currentTags.push(newTag);
 
-/*        setValue('tags')  no me hace falta esto porque en currentTags tengo la referencia a los values, no solo el valor
-entonces los cambios a currentTags impactan en los values */
+        /*        setValue('tags')  no me hace falta esto porque en currentTags tengo la referencia a los values, no solo el valor
+        entonces los cambios a currentTags impactan en los values */
 
 
 
     }
 
-    const onChangeSize = ( size: string) => {
+    const onChangeSize = (size: string) => {
         const currentSizes = getValues('sizes');
-        if(currentSizes.includes( size )) {
-            return setValue('sizes', currentSizes.filter( s => s !== size), { shouldValidate: true})
+        if (currentSizes.includes(size)) {
+            return setValue('sizes', currentSizes.filter(s => s !== size), { shouldValidate: true })
         }
 
-        setValue( 'sizes', [...currentSizes, size], {shouldValidate: true});
+        setValue('sizes', [...currentSizes, size], { shouldValidate: true });
     }
 
 
-    const onFileSelected = async({ target }: ChangeEvent<HTMLInputElement>) => {
-        if(!target.files || target.files.length === 0) {
+    const onFilesSelected = async ({ target }: ChangeEvent<HTMLInputElement>) => {
+        if (!target.files || target.files.length === 0) {
             return;
         }
         try {
-            for( const file of target.files ) {
+            for (const file of target.files) {
                 const formData = new FormData();
                 formData.append('file', file)
                 const { data } = await tesloApi.post<{ message: string }>('/admin/upload', formData);
-                console.log(data)
+                setValue('images', [...getValues('images'), data.message], { shouldValidate: true })
             }
         } catch (error) {
 
         }
+    }
+
+    const onDeleteImage = (image: string) => {
+        setValue('images',
+            getValues('images').filter(img => img !== image),
+            { shouldValidate: true }
+
+        )
 
     }
 
-    const onSubmit = async(form: FormData) => {
+    const onSubmit = async (form: FormData) => {
         if (form.images.length < 2) return alert('Minimo dos imagenes');
 
         setIsSaving(true);
@@ -132,15 +140,15 @@ entonces los cambios a currentTags impactan en los values */
         try {
             const { data } = await tesloApi({
                 url: '/admin/products',
-                method: form._id? 'PUT' : 'POST', // TODO: si tenemos un _id, entonces actualizar, si no, crear
+                method: form._id ? 'PUT' : 'POST', // TODO: si tenemos un _id, entonces actualizar, si no, crear
                 data: form
             });
 
-            console.log({data});
+            console.log({ data });
 
-            if( !form._id ){
+            if (!form._id) {
                 // TODO: recargar el navegador
-                router.replace(`/admin/products/${ form.slug }`)
+                router.replace(`/admin/products/${form.slug}`)
             } else {
                 setIsSaving(false)
             }
@@ -164,7 +172,7 @@ entonces los cambios a currentTags impactan en los values */
                         startIcon={<SaveOutlined />}
                         sx={{ width: '150px' }}
                         type="submit"
-                        disabled={ isSaving }
+                        disabled={isSaving}
                     >
                         Guardar
                     </Button>
@@ -323,10 +331,10 @@ entonces los cambios a currentTags impactan en los values */
                             <FormLabel>Tallas</FormLabel>
                             {
                                 validSizes.map(size => (
-                                    <FormControlLabel key={size} 
-                                    control={<Checkbox checked={ getValues('sizes').includes(size)}/>} 
-                                    label={size} 
-                                    onChange={ ( ) => onChangeSize( size )}
+                                    <FormControlLabel key={size}
+                                        control={<Checkbox checked={getValues('sizes').includes(size)} />}
+                                        label={size}
+                                        onChange={() => onChangeSize(size)}
                                     />
                                 ))
                             }
@@ -356,9 +364,9 @@ entonces los cambios a currentTags impactan en los values */
                             fullWidth
                             sx={{ mb: 1 }}
                             helperText="Presiona [spacebar] para agregar"
-                            value={ newTagValue }
-                            onChange={ ({ target }) => setNewTagValue(target.value)}
-                            onKeyUp={ ({code}) => code === 'Space' ? onNewTag() : undefined}
+                            value={newTagValue}
+                            onChange={({ target }) => setNewTagValue(target.value)}
+                            onKeyUp={({ code }) => code === 'Space' ? onNewTag() : undefined}
                         />
 
                         <Box sx={{
@@ -394,17 +402,17 @@ entonces los cambios a currentTags impactan en los values */
                                 fullWidth
                                 startIcon={<UploadOutlined />}
                                 sx={{ mb: 3 }}
-                                onClick={ () => fileInputRef.current?.click()}
-                            > 
+                                onClick={() => fileInputRef.current?.click()}
+                            >
                                 Cargar imagen
                             </Button>
-                            <input 
-                                ref={ fileInputRef }
+                            <input
+                                ref={fileInputRef}
                                 type="file"
                                 multiple
                                 accept='image/png, image/gif, image/jpeg'
                                 style={{ display: 'none' }}
-                                onChange={ onFileSelected }
+                                onChange={onFilesSelected}
                             />
                             <Chip
                                 label="Es necesario al 2 imagenes"
@@ -414,17 +422,21 @@ entonces los cambios a currentTags impactan en los values */
 
                             <Grid container spacing={2}>
                                 {
-                                    product.images.map(img => (
+                                    getValues('images').map(img => (
                                         <Grid item xs={4} sm={3} key={img}>
                                             <Card>
                                                 <CardMedia
                                                     component='img'
                                                     className='fadeIn'
-                                                    image={`/products/${img}`}
+                                                    image={img}
                                                     alt={img}
                                                 />
                                                 <CardActions>
-                                                    <Button fullWidth color="error">
+                                                    <Button
+                                                        fullWidth
+                                                        color="error"
+                                                        onClick={() => onDeleteImage(img)}
+                                                    >
                                                         Borrar
                                                     </Button>
                                                 </CardActions>
@@ -454,9 +466,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
     let product: IProduct | null;
 
-    if ( slug === 'new') {
+    if (slug === 'new') {
         // crear un producto
-        const tempProduct = JSON.parse(JSON.stringify( new Product() ))
+        const tempProduct = JSON.parse(JSON.stringify(new Product()))
         delete tempProduct._id; /* cuando hago new del modelo de mongoose me genera un id que en este caso no quiero  */
         tempProduct.images = ['img1.jpg', 'img2.jpg'];
         product = tempProduct;
