@@ -107,14 +107,16 @@ entonces los cambios a currentTags impactan en los values */
     }
 
 
-    const onFileSelected = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    const onFileSelected = async({ target }: ChangeEvent<HTMLInputElement>) => {
         if(!target.files || target.files.length === 0) {
             return;
         }
         try {
             for( const file of target.files ) {
-                const fromData = new FormData();
-                console.log( file );
+                const formData = new FormData();
+                formData.append('file', file)
+                const { data } = await tesloApi.post<{ message: string }>('/admin/upload', formData);
+                console.log(data)
             }
         } catch (error) {
 
